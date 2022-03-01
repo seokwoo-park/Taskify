@@ -1,14 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { InputField } from "./components/index";
+import { InputField, TodoList } from "./components/index";
+import { Todo } from "./components/model";
+import { v4 as uuid } from "uuid";
 
-type Props = {};
+const App = () => {
+  const [todo, setTodo] = useState<string>("");
+  const [todos, setTodos] = useState<Todo[]>([]);
 
-const App = (props: Props) => {
+  console.log(todos);
+
+  const handleAddTodo = (e: React.FormEvent<EventTarget>) => {
+    e.preventDefault();
+
+    if (todo) {
+      setTodos([...todos, { id: uuid(), todo, isDone: false }]);
+      setTodo("");
+    }
+  };
+
   return (
     <Container>
       <Header>Taskify</Header>
-      <InputField />
+      <InputField todo={todo} setTodo={setTodo} handleAddTodo={handleAddTodo} />
+      <TodoList todos={todos} setTodos={setTodos} />
     </Container>
   );
 };

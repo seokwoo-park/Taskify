@@ -1,11 +1,36 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 
-const InputField = () => {
+interface Props {
+  todo: string;
+  setTodo: React.Dispatch<React.SetStateAction<string>>;
+  handleAddTodo: (e: React.FormEvent<EventTarget>) => void;
+}
+
+const InputField = ({ todo, setTodo, handleAddTodo }: Props) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTodo(e.target.value);
+  };
+
   return (
-    <StyledInput>
-      <input type="input" placeholder="Enter a Task" />
-      <button type="submit">Go</button>
+    <StyledInput
+      onSubmit={(e) => {
+        handleAddTodo(e);
+        inputRef.current?.blur();
+      }}
+    >
+      <input
+        ref={inputRef}
+        type="input"
+        placeholder="Enter a Task"
+        value={todo}
+        onChange={(e) => onChangeHandler(e)}
+      />
+      <button type="submit" onSubmit={handleAddTodo}>
+        Go
+      </button>
     </StyledInput>
   );
 };
@@ -32,6 +57,7 @@ const StyledInput = styled.form`
   }
   button {
     position: absolute;
+    right: 0;
     width: 50px;
     height: 50px;
     margin: 1em;
