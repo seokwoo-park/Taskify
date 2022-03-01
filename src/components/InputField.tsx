@@ -23,9 +23,9 @@ const InputField = ({ todo, setTodo, handleAddTodo }: Props) => {
     >
       <input
         ref={inputRef}
+        value={todo}
         type="input"
         placeholder="Enter a Task"
-        value={todo}
         onChange={(e) => onChangeHandler(e)}
       />
       <button type="submit" onSubmit={handleAddTodo}>

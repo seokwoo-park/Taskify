@@ -8,13 +8,11 @@ const App = () => {
   const [todo, setTodo] = useState<string>("");
   const [todos, setTodos] = useState<Todo[]>([]);
 
-  console.log(todos);
-
   const handleAddTodo = (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
 
     if (todo) {
-      setTodos([...todos, { id: uuid(), todo, isDone: false }]);
+      setTodos([...todos, { id: uuid(), todo, isDone: false, isEdit: false }]);
       setTodo("");
     }
   };
@@ -31,8 +29,9 @@ const App = () => {
 const Container = styled.div`
   @import url("https://fonts.googleapis.com/css2?family=Neucha&display=swap");
 
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
