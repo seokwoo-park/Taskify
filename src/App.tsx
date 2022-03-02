@@ -3,10 +3,12 @@ import styled from "styled-components";
 import { InputField, TodoList } from "./components/index";
 import { Todo } from "./model";
 import { v4 as uuid } from "uuid";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 
 const App = () => {
   const [todo, setTodo] = useState<string>("");
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [completedTasks, setCompletedTasks] = useState<Todo[]>([]);
 
   const handleAddTodo = (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
@@ -17,12 +19,49 @@ const App = () => {
     }
   };
 
+  const onDragEnd = (result: DropResult) => {
+    const { source, destination } = result;
+    if (!destination) return;
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return;
+    let add,
+      active = todos,
+      complete = completedTasks;
+    if (source.droppableId === "ActiveTasks") {
+      add = active[source.index];
+      active.splice(source.index, 1);
+    } else {
+      add = complete[source.index];
+      complete.splice(source.index, 1);
+    }
+    if (destination.droppableId === "ActiveTasks") {
+      active.splice(destination.index, 0, add);
+    } else {
+      complete.splice(destination.index, 0, add);
+    }
+    setCompletedTasks(complete);
+    setTodos(active);
+  };
+
   return (
-    <Container>
-      <Header>Taskify</Header>
-      <InputField todo={todo} setTodo={setTodo} handleAddTodo={handleAddTodo} />
-      <TodoList todos={todos} setTodos={setTodos} />
-    </Container>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Container>
+        <Header>Taskify</Header>
+        <InputField
+          todo={todo}
+          setTodo={setTodo}
+          handleAddTodo={handleAddTodo}
+        />
+        <TodoList
+          completedTasks={completedTasks}
+          todos={todos}
+          setTodos={setTodos}
+        />
+      </Container>
+    </DragDropContext>
   );
 };
 

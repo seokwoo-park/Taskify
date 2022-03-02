@@ -3,13 +3,15 @@ import styled from "styled-components";
 import { Todo } from "../model";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { MdDone } from "react-icons/md";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 
 type Props = {
   todos: Todo[];
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  completedTasks: Todo[];
 };
 
-const TodoList = ({ todos, setTodos }: Props) => {
+const TodoList = ({ todos, setTodos, completedTasks }: Props) => {
   const [editValue, setEditValue] = useState<string>("");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>, id: string) => {
@@ -43,40 +45,75 @@ const TodoList = ({ todos, setTodos }: Props) => {
 
   return (
     <Container>
-      <ActiveTasks>
-        <h3>Active Tasks</h3>
-        {todos &&
-          todos.map((todo) => (
-            <TodoCard key={todo.id} onSubmit={(e) => handleSubmit(e, todo.id)}>
-              {todo.isEdit ? (
-                <input
-                  onChange={(e) => setEditValue(e.target.value)}
-                  placeholder="Press enter to submit.."
-                  autoFocus
-                />
-              ) : todo.isDone ? (
-                <s>{todo.todo}</s>
-              ) : (
-                <span>{todo.todo}</span>
-              )}
-              <div>
-                <i onClick={() => handleEdit(todo.id)}>
-                  <AiFillEdit />
-                </i>
-                <i onClick={() => handleDelete(todo.id)}>
-                  <AiFillDelete />
-                </i>
-                <i onClick={() => handleDone(todo.id)}>
-                  <MdDone />
-                </i>
-              </div>
-            </TodoCard>
-          ))}
-      </ActiveTasks>
+      <Droppable droppableId="ActiveTasks">
+        {(provided) => (
+          <ActiveTasks ref={provided.innerRef} {...provided.droppableProps}>
+            <h3>Active Tasks</h3>
+            {todos &&
+              todos.map((todo, index) => (
+                <Draggable draggableId={todo.id} index={index} key={index}>
+                  {(provided) => (
+                    <TodoCard
+                      key={todo.id}
+                      onSubmit={(e) => handleSubmit(e, todo.id)}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      ref={provided.innerRef}
+                    >
+                      {todo.isEdit ? (
+                        <input
+                          onChange={(e) => setEditValue(e.target.value)}
+                          placeholder="Press enter to submit.."
+                          autoFocus
+                        />
+                      ) : todo.isDone ? (
+                        <s>{todo.todo}</s>
+                      ) : (
+                        <span>{todo.todo}</span>
+                      )}
+                      <div>
+                        <i onClick={() => handleEdit(todo.id)}>
+                          <AiFillEdit />
+                        </i>
+                        <i onClick={() => handleDelete(todo.id)}>
+                          <AiFillDelete />
+                        </i>
+                        <i onClick={() => handleDone(todo.id)}>
+                          <MdDone />
+                        </i>
+                      </div>
+                    </TodoCard>
+                  )}
+                </Draggable>
+              ))}
+            {provided.placeholder}
+          </ActiveTasks>
+        )}
+      </Droppable>
 
-      <CompletedTasks>
-        <h3>Completed Tasks</h3>
-      </CompletedTasks>
+      <Droppable droppableId="CompletedTasks">
+        {(provided) => (
+          <CompletedTasks ref={provided.innerRef} {...provided.droppableProps}>
+            <h3>Completed Tasks</h3>
+            {completedTasks &&
+              completedTasks.map((todo, index) => (
+                <Draggable draggableId={todo.id} index={index} key={index}>
+                  {(provided) => (
+                    <TodoCard
+                      key={todo.id}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      ref={provided.innerRef}
+                    >
+                      <s>{todo.todo}</s>
+                    </TodoCard>
+                  )}
+                </Draggable>
+              ))}
+            {provided.placeholder}
+          </CompletedTasks>
+        )}
+      </Droppable>
     </Container>
   );
 };
