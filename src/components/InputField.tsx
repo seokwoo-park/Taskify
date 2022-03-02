@@ -37,7 +37,7 @@ const InputField = ({ todo, setTodo, handleAddTodo }: Props) => {
 
 const StyledInput = styled.form`
   display: flex;
-  width: 90%;
+  width: 95%;
   position: relative;
   align-items: center;
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { InputField, TodoList } from "./components/index";
-import { Todo } from "./components/model";
+import { Todo } from "./model";
 import { v4 as uuid } from "uuid";
 
 const App = () => {
@@ -27,8 +27,6 @@ const App = () => {
 };
 
 const Container = styled.div`
-  @import url("https://fonts.googleapis.com/css2?family=Neucha&display=swap");
-
   width: 100%;
   min-height: 100vh;
   height: 100%;
@@ -36,13 +34,12 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: #2f74c0;
-  font-family: "Neucha", cursive;
 `;
 
 const Header = styled.header`
   text-transform: uppercase;
   font-size: 2.5em;
-  margin: 2em 0;
+  margin: 1em 0;
   color: #fff;
   text-align: center;
   z-index: 1;
